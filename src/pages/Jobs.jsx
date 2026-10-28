@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
   Badge,
@@ -27,15 +27,6 @@ const Detail = ({ label, value }) => (
     </p>
   </div>
 );
-const money = (amount) =>
-  amount == null
-    ? "—"
-    : new Intl.NumberFormat("en-PH", {
-        style: "currency",
-        currency: "PHP",
-        maximumFractionDigits: 0,
-      }).format(amount);
-
 export default function Jobs({
   jobs: initialJobs = [],
   onCreateEmployment,
@@ -46,6 +37,10 @@ export default function Jobs({
   const [importance, setImportance] = useState("All jobs");
   const [selectedJob, setSelectedJob] = useState(null);
   const [employmentJob, setEmploymentJob] = useState(null);
+
+  useEffect(() => {
+    setJobs(initialJobs);
+  }, [initialJobs]);
 
   const filtered = useMemo(
     () =>
@@ -143,7 +138,8 @@ export default function Jobs({
                       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500">
                         <span>{job.location}</span>
                         <span>{job.employmentType}</span>
-                        <span>{money(job.amount)}</span>
+                        <span>{job.payRange || "Salary not listed"}</span>
+                        {job.isRemote && <span>Remote</span>}
                       </div>
                     </div>
                   </div>
@@ -211,7 +207,7 @@ export default function Jobs({
               Job details
             </p>
             <p className="mt-1 text-sm font-normal text-slate-400">
-              Full role, client, and compensation information.
+              Role details from Tomo job listings.
             </p>
           </div>
         }
@@ -234,29 +230,33 @@ export default function Jobs({
               {selectedJob.jobDescription}
             </p>
             <div className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 [&>*]:min-w-0">
-              <Detail label="Shift" value={selectedJob.shift} />
-              <Detail label="Priority" value={selectedJob.priority} />
+              <Detail label="Shift" value={selectedJob.shiftSchedule} />
+              <Detail label="Languages" value={selectedJob.progLang} />
               <Detail label="Location" value={selectedJob.location} />
               <Detail
                 label="Employment type"
                 value={selectedJob.employmentType}
               />
-              <Detail label="Posted date" value={selectedJob.postedDate} />
+              <Detail label="Posted date" value={selectedJob.postedOn} />
               <Detail label="Skills" value={selectedJob.tags?.join(", ")} />
-              <Detail
-                label="Contact person"
-                value={selectedJob.contactPerson}
-              />
-              <Detail label="Phone" value={selectedJob.phoneNumber} />
-              <Detail label="Email" value={selectedJob.emailAddress} />
-              <Detail label="Income type" value={selectedJob.incomeType} />
-              <Detail label="Amount" value={money(selectedJob.amount)} />
-              <Detail
-                label="Payout schedule"
-                value={selectedJob.payoutSchedule}
-              />
-              <Detail label="Tax type" value={selectedJob.taxType} />
+              <Detail label="Employer" value={selectedJob.employerName} />
+              <Detail label="Publisher" value={selectedJob.jobPublisher} />
+              <Detail label="Pay range" value={selectedJob.payRange} />
+              <Detail label="Work arrangement" value={selectedJob.isRemote ? "Remote" : "On-site / unspecified"} />
+              <Detail label="Employer website" value={selectedJob.employerWebsite} />
             </div>
+            {selectedJob.applyLink && (
+              <Button
+                component="a"
+                href={selectedJob.applyLink}
+                target="_blank"
+                rel="noreferrer"
+                radius="xl"
+                variant="light"
+              >
+                View application
+              </Button>
+            )}
             <Button
               radius="xl"
               className="bg-indigo-600 hover:bg-indigo-700"

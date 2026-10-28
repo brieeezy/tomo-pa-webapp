@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { AppShell, Container, Drawer } from "@mantine/core";
+import {
+  AppShell,
+  Container,
+  Drawer,
+} from "@mantine/core";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -26,7 +30,7 @@ export default function App() {
   const [active, setActive] = useState("overview");
   const [employers, setEmployers] = useState(seedEmployers);
   const [invoices, setInvoices] = useState(seedInvoices);
-  const {jobs, loading, error} = useJobs();
+  const { jobs, loading, error } = useJobs();
   const [selectedJob, setSelectedJob] = useState(null);
 
   const [invoiceModal, setInvoiceModal] = useState(false);
@@ -95,7 +99,7 @@ export default function App() {
           />
 
           <Container size="xl" className="px-5 py-7 md:px-8 md:py-9">
-            <Loadable loading={pageLoading} error={pageError}>
+            <Loadable loading={active === "jobs" ? pageLoading : false} error={active === "jobs" ? pageError : ""}>
               {page}
             </Loadable>
           </Container>

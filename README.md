@@ -31,3 +31,13 @@ src/
 ```
 
 Data is currently held in React state and resets on refresh. Connect a backend/API for persistence.
+
+## Tomo job service
+
+The Jobs page reads listings from Tomo Desktop's Spring controller at `GET /jobs`.
+In development, Vite proxies `/api/*` to `http://localhost:8080` by default. Set
+`TOMO_API_ORIGIN` to change the backend origin, or set `VITE_JOBS_API_URL` to
+the complete jobs endpoint URL. The service currently uses hard-coded Basic
+authentication credentials in `src/services/jobsApi.js` for development.
+Vite embeds frontend credentials in the browser bundle; use a backend proxy
+with server-side credentials before deploying this configuration.
