@@ -1,4 +1,4 @@
-# Ledger — React + Tailwind + Mantine
+# TomoPA-webapp — React + Tailwind + Mantine
 
 A clean ledger/invoice workspace with a soft gradient UI, split into reusable components and page modules.
 
