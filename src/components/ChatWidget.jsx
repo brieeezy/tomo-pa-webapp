@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { ActionIcon, Group, Paper, ScrollArea, Stack, Text, TextInput } from "@mantine/core";
-import { IconArrowUp, IconMessageChatbot } from "@tabler/icons-react";
+import { IconArrowUp } from "@tabler/icons-react";
 import { sendChatMessage } from "../services/chatApi";
+import tomoLogo from "../assets/tomo-logo.svg";
 
 export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [open, setOpen] = useState(true);
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([
     {
@@ -15,6 +17,7 @@ export default function ChatWidget() {
   ]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [retryMessage, setRetryMessage] = useState(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,17 +32,22 @@ export default function ChatWidget() {
     setMessages(nextMessages);
     setInput("");
     setSending(true);
+    setRetryMessage(null);
 
     try {
       const response = await sendChatMessage(content, conversationId);
       setConversationId(response.conversationId);
       setMessages((current) => [...current, { role: "assistant", content: response.answer }]);
     } catch (error) {
+      setRetryMessage(content);
+      const detail = error.response?.data?.message || error.response?.data?.error;
       setMessages((current) => [
         ...current,
         {
           role: "error",
-          content: "I couldn’t reach the assistant. Please try again in a moment.",
+          content: detail || (error.response?.status
+            ? `The assistant request failed (${error.response.status}). Check the chat service and try again.`
+            : "I couldn’t reach the assistant. Check your connection and try again."),
         },
       ]);
       console.error("Chat request failed:", error);
@@ -49,25 +57,37 @@ export default function ChatWidget() {
     }
   }
 
+  async function retryLastMessage() {
+    if (!retryMessage || sending) return;
+    setMessages((current) => current.filter((message) => message.role !== "error"));
+    setInput(retryMessage);
+    requestAnimationFrame(() => inputRef.current?.form?.requestSubmit());
+  }
+
   return (
-    <aside
+    <>
+    {!open && <button type="button" onClick={() => setOpen(true)} className="tomo-chathead-launcher" aria-label="Open Tomo assistant">
+      <img src={tomoLogo} alt="" /><span className="tomo-chathead-status" />
+    </button>}
+    {open && <aside
       className="sticky top-0 flex h-screen w-[clamp(300px,29vw,390px)] shrink-0 border-l border-[#eee5da] bg-white max-[480px]:w-[280px]"
       aria-label="Tomo assistant sidebar"
     >
       <Paper className="flex h-full min-h-0 w-full flex-1 flex-col rounded-none border-0" component="section" aria-label="Chat with Tomo assistant">
         <Group className="shrink-0 border-b border-[#eee5da]" wrap="nowrap" p="md" gap="sm">
-          <ActionIcon size="lg" variant="light" color="teal" radius="md" aria-hidden="true">
-            <IconMessageChatbot size={21} />
-          </ActionIcon>
+          <img src={tomoLogo} alt="Tomo" className="tomo-chathead-avatar" />
           <Stack gap={2}>
             <Text fw={700} size="sm">Tomo assistant</Text>
             <Text size="xs" c="dimmed">Ask about your workspace</Text>
           </Stack>
+          <button type="button" className="tomo-chat-minimize" onClick={() => setOpen(false)} aria-label="Minimize assistant">—</button>
         </Group>
 
         <ScrollArea className="min-h-0 flex-1 bg-[#fffaf4] p-4" type="auto" offsetScrollbars>
           <Stack gap="sm" aria-live="polite" aria-busy={sending}>
             {messages.map((message, index) => (
+              <div className={`tomo-message-row ${message.role === "user" ? "tomo-message-user" : "tomo-message-assistant"}`} key={`${index}-${message.role}`}>
+              {message.role !== "user" && <img src={tomoLogo} alt="Tomo" className="tomo-chathead-message" />}
               <Paper
                 className={`max-w-[86%] ${message.role === "user" ? "self-end" : "self-start"}`}
                 key={`${index}-${message.role}`}
@@ -84,9 +104,11 @@ export default function ChatWidget() {
                   {message.content}
                 </Text>
               </Paper>
+              </div>
             ))}
             {sending && <Text size="sm" c="dimmed" role="status">Thinking…</Text>}
             <div ref={messagesEndRef} />
+            {retryMessage && <button type="button" className="tomo-chat-retry" onClick={retryLastMessage}>Retry message</button>}
           </Stack>
         </ScrollArea>
 
@@ -119,5 +141,7 @@ export default function ChatWidget() {
         </form>
       </Paper>
     </aside>
+    }
+    </>
   );
 }

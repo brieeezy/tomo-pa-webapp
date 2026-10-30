@@ -670,3 +670,21 @@ body {
   .tm-footer > span { width: calc(100% - 120px); font-size: 7px; }
   .tm-footer > button { font-size: 8px; }
 }
+
+/* Tomo assistant chat heads */
+.tomo-chathead-avatar { width: 38px; height: 38px; flex: 0 0 38px; border: 2px solid #e8f7f5; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px #392f5a1c; }
+.tomo-chathead-message { width: 28px; height: 28px; flex: 0 0 28px; align-self: flex-end; border: 1px solid #d8efeb; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 6px #392f5a18; }
+.tomo-message-row { display: flex; width: 100%; align-items: flex-end; gap: 7px; }
+.tomo-message-user { justify-content: flex-end; }
+.tomo-message-assistant { justify-content: flex-start; }
+.tomo-chat-minimize { margin-left: auto; display: grid; width: 30px; height: 30px; place-items: center; border: 0; border-radius: 50%; background: #f5f2f7; color: #51476a; font-size: 17px; cursor: pointer; }
+.tomo-chat-minimize:hover { background: #e8f7f5; }
+.tomo-chathead-launcher { position: fixed; z-index: 100; right: 24px; bottom: 24px; display: grid; width: 62px; height: 62px; place-items: center; border: 3px solid white; border-radius: 50%; background: #fff; box-shadow: 0 8px 28px #392f5a30; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+.tomo-chathead-launcher:hover { transform: translateY(-3px); box-shadow: 0 12px 30px #392f5a3d; }
+.tomo-chathead-launcher img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.tomo-chathead-status { position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; background: #39a982; }
+.tomo-chat-retry { align-self: flex-start; margin-left: 35px; border: 0; background: transparent; color: #aa5b08; font-size: 12px; font-weight: 700; text-decoration: underline; cursor: pointer; }
+@media (max-width: 640px) {
+  .tomo-chathead-launcher { right: 16px; bottom: 16px; width: 56px; height: 56px; }
+  .tomo-chathead-avatar { width: 34px; height: 34px; flex-basis: 34px; }
+}

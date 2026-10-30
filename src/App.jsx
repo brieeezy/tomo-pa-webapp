@@ -58,7 +58,7 @@ export default function App() {
   const logout = () => {
     clearApiCredentials();
     setAuthenticated(false);
-    navigate("/");
+    navigate("/login");
   };
 
   const closeLogin = () => {
@@ -67,6 +67,7 @@ export default function App() {
   };
 
   if (path === "/app" && authenticated) return <WorkspaceApp onLogout={logout} />;
+  if (path === "/app") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   if (path === "/login") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   if (path === "/workspace") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   return <LandingPage />;
@@ -75,6 +76,13 @@ export default function App() {
 function WorkspaceApp({ onLogout }) {
   const [active, setActive] = useState("overview");
   const { jobs, loading, error } = useJobs();
+  const [viewedJobIds, setViewedJobIds] = useState(() => {
+    try {
+      return new Set(JSON.parse(window.localStorage.getItem("tomo-viewed-job-ids") || "[]").map(String));
+    } catch {
+      return new Set();
+    }
+  });
   const {
     invoices,
     loading: invoicesLoading,
@@ -104,6 +112,16 @@ function WorkspaceApp({ onLogout }) {
     setMobileNav(false);
   };
 
+  const markJobViewed = (job) => {
+    const id = String(job.id);
+    setViewedJobIds((current) => {
+      const next = new Set(current);
+      next.add(id);
+      window.localStorage.setItem("tomo-viewed-job-ids", JSON.stringify([...next]));
+      return next;
+    });
+  };
+
   const page =
     active === "invoices" ? (
       <Invoices
@@ -124,6 +142,7 @@ function WorkspaceApp({ onLogout }) {
     ) : active === "jobs" ? (
       <Jobs
         jobs={jobs}
+        onViewJob={markJobViewed}
         onCreateEmployment={createEmployer}
         onToggleImportant={(job) => {
           console.log("Toggled important:", job.id);
@@ -149,14 +168,16 @@ function WorkspaceApp({ onLogout }) {
       }}
       padding={0}
     >
-      <div className="flex min-h-screen bg-[radial-gradient(ellipse_at_top_left,_#9dd9d244_0%,_transparent_38%),radial-gradient(ellipse_at_top_right,_#f4d06f33_0%,_transparent_32%),#fff8f0]">
+      <div className="flex h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top_left,_#9dd9d244_0%,_transparent_38%),radial-gradient(ellipse_at_top_right,_#f4d06f33_0%,_transparent_32%),#fff8f0]">
         <Sidebar active={active} onNavigate={navigate} />
 
-        <main className="app-main min-w-0 flex-1">
+        <main className="app-main min-h-0 min-w-0 flex-1 overflow-y-auto">
           <Topbar
             title={pageTitles[active]}
             onMenu={() => setMobileNav(true)}
             onLogout={onLogout}
+            newJobs={jobs.filter((job) => !viewedJobIds.has(String(job.id)))}
+            onOpenJobs={() => navigate("jobs")}
           />
 
           <Container size="xl" className="px-5 py-7 md:px-8 md:py-9">

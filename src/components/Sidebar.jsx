@@ -16,7 +16,7 @@ const links = [
 
 export default function Sidebar({ active, onNavigate }) {
   return (
-    <aside className="hidden w-[250px] shrink-0 border-r border-[#eee5da] bg-[#fff8f0]/85 px-5 py-7 backdrop-blur-xl lg:flex lg:flex-col">
+    <aside className="sticky top-0 hidden h-screen w-[250px] shrink-0 border-r border-[#eee5da] bg-[#fff8f0]/85 px-5 py-7 backdrop-blur-xl lg:flex lg:flex-col">
       <Brand />
       <p className="mb-3 mt-10 px-3 text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">
         Workspace

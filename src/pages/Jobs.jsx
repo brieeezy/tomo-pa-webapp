@@ -90,6 +90,7 @@ function JobDescription({ description }) {
 
 export default function Jobs({
   jobs: initialJobs = [],
+  onViewJob,
   onCreateEmployment,
   onToggleImportant,
 }) {
@@ -171,7 +172,7 @@ export default function Jobs({
             {filtered.map((job) => (
               <article
                 key={job.id}
-                onClick={() => setSelectedJob(job)}
+                onClick={() => { onViewJob?.(job); setSelectedJob(job); }}
                 className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-[#ffe5cc] hover:shadow-md sm:p-6"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -273,20 +274,22 @@ export default function Jobs({
           </div>
         }
         centered
-        size="lg"
+        size="xl"
         radius="2xl"
         styles={{
           content: {
             display: "flex",
             flexDirection: "column",
             maxHeight: "calc(100dvh - 2rem)",
+            height: "min(760px, calc(100dvh - 2rem))",
+            overflow: "hidden",
           },
           header: { flex: "0 0 auto" },
           body: {
             flex: "1 1 auto",
             minHeight: 0,
-            overflowX: "hidden",
-            overflowY: "auto",
+            overflow: "auto",
+            overscrollBehavior: "contain",
           },
         }}
       >
