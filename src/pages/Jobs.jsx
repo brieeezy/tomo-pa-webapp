@@ -18,6 +18,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import EmployerModal from "../components/EmployerModal";
+import { formatDate } from "../utils/formatters";
 
 const Detail = ({ label, value }) => (
   <div className="min-w-0">
@@ -195,9 +196,14 @@ export default function Jobs({
                         {job.clientName}
                       </p>
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">
-                        {job.jobDescription}
+                        {job.jobDescription || "No description provided."}
                       </p>
                       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500">
+                        <span>
+                          Posted {job.postedDate || job.postedOn
+                            ? formatDate(job.postedDate || job.postedOn)
+                            : "Date not listed"}
+                        </span>
                         <span>{job.location}</span>
                         <span>{job.employmentType}</span>
                         <span>{job.payRange || "Salary not listed"}</span>
@@ -264,17 +270,22 @@ export default function Jobs({
         opened={!!selectedJob}
         onClose={() => setSelectedJob(null)}
         title={
-          <div>
-            <p className="font-display text-xl font-extrabold text-ink">
-              Job details
-            </p>
-            <p className="mt-1 text-sm font-normal text-slate-400">
-              Role details from Tomo job listings.
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#fff1e3] text-brand">
+              <IconBriefcase size={21} />
+            </div>
+            <div>
+              <p className="font-display text-xl font-extrabold text-ink">
+                Job details
+              </p>
+              <p className="mt-1 text-sm font-normal text-slate-400">
+                Role details from Tomo job listings.
+              </p>
+            </div>
           </div>
         }
         centered
-        size="xl"
+        size="lg"
         radius="2xl"
         styles={{
           content: {
@@ -290,6 +301,7 @@ export default function Jobs({
             minHeight: 0,
             overflow: "auto",
             overscrollBehavior: "contain",
+            padding: "12px0 40px",
           },
         }}
       >
@@ -312,7 +324,14 @@ export default function Jobs({
                 label="Employment type"
                 value={selectedJob.employmentType}
               />
-              <Detail label="Posted date" value={selectedJob.postedOn} />
+              <Detail
+                label="Posted date"
+                value={
+                  selectedJob.postedDate || selectedJob.postedOn
+                    ? formatDate(selectedJob.postedDate || selectedJob.postedOn)
+                    : null
+                }
+              />
               <Detail label="Skills" value={selectedJob.tags?.join(", ")} />
               <Detail label="Employer" value={selectedJob.employerName} />
               <Detail label="Publisher" value={selectedJob.jobPublisher} />
