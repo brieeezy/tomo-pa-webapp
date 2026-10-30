@@ -1,12 +1,10 @@
 import axios from "axios";
+import { getApiCredentials } from "./auth";
 
 export async function getJobs() {
   const api = axios.create({
     baseURL: import.meta.env.VITE_JOBS_API_URL || "/api/jobs",
-    auth: {
-      username: "superadmin",
-      password: "password",
-    },
+    auth: getApiCredentials() || undefined,
   });
   const response = await api.get("");
   return response.data.map((job) => ({

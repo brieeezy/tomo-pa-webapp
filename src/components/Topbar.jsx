@@ -1,8 +1,8 @@
-import { IconBell, IconSearch, IconMenu2 } from "@tabler/icons-react";
+import { IconBell, IconSearch, IconMenu2, IconLogout } from "@tabler/icons-react";
 
-export default function Topbar({ title, onMenu }) {
+export default function Topbar({ title, onMenu, onLogout }) {
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-white/70 bg-white/45 px-5 py-4 backdrop-blur-xl md:px-8">
+    <header className="flex items-center justify-between gap-4 border-b border-[#eee5da] bg-[#fff8f0]/80 px-5 py-4 backdrop-blur-xl md:px-8">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenu}
@@ -25,9 +25,12 @@ export default function Topbar({ title, onMenu }) {
         </div>
         <button className="relative rounded-xl bg-white p-2.5 text-slate-500 shadow-sm">
           <IconBell size={18} />
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-rose-500" />
+          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#9dd9d2] ring-2 ring-white" />
         </button>
-        <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-xs font-bold text-white">
+        <button onClick={onLogout} className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-500 transition hover:bg-[#e8f7f5] hover:text-space" aria-label="Sign out">
+          <IconLogout size={17} /><span className="hidden sm:inline">Sign out</span>
+        </button>
+        <div className="grid h-9 w-9 place-items-center rounded-full bg-space text-xs font-bold text-[#9dd9d2] ring-2 ring-[#9dd9d2]/50">
           JM
         </div>
       </div>

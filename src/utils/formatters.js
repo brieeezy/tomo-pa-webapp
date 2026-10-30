@@ -14,5 +14,14 @@ export const formatDate = (date) => {
   }).format(new Date(`${date}T00:00:00`));
 };
 
-export const calculateInvoice = ({ hours, rate }) =>
-  Number(hours || 0) * Number(rate || 0);
+export const calculateInvoice = (invoice) => {
+  if (invoice.grossIncome != null) return Number(invoice.grossIncome);
+  if (invoice.netIncome != null) {
+    return (
+      Number(invoice.netIncome || 0) +
+      Number(invoice.tax || 0) +
+      Number(invoice.deductibles || 0)
+    );
+  }
+  return Number(invoice.hours || 0) * Number(invoice.rate || 0);
+};

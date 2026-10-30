@@ -15,12 +15,11 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-import StatusBadge from "../components/StatusBadge";
 import EditableCell from "../components/EditableCell";
 
-import { formatMoney, formatDate } from "../utils/formatters";
+import { formatMoney } from "../utils/formatters";
 
-const STATUS_OPTIONS = ["Pending", "Paid", "Overdue"];
+const STATUS_OPTIONS = ["Pending", "Paid", "Overdue", "Unpaid", "Void"];
 
 export default function Invoices({
   invoices,
@@ -28,12 +27,13 @@ export default function Invoices({
   onCreate,
   onUpdate,
   onDelete,
+  error,
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
 
-  const clientName = (id) =>
-    employers.find((employer) => String(employer.id) === String(id))?.name ||
+  const clientName = (employmentId) =>
+    employers.find((employer) => String(employer.id) === String(employmentId))?.clientName ||
     "Unknown client";
 
   const filtered = useMemo(
@@ -42,9 +42,8 @@ export default function Invoices({
         const matchesStatus = status === "All" || invoice.status === status;
 
         const matchesSearch = [
-          invoice.id,
-          invoice.client,
-          clientName(invoice.employerId),
+          invoice.invoiceId,
+          clientName(invoice.employmentId),
         ]
           .join(" ")
           .toLowerCase()
@@ -56,9 +55,7 @@ export default function Invoices({
   );
 
   const updateField = (invoice, field, value) => {
-    onUpdate(invoice.id, {
-      [field]: value,
-    });
+    onUpdate(invoice.id, { [field]: value }).catch(() => {});
   };
 
   return (
@@ -81,11 +78,12 @@ export default function Invoices({
           onClick={onCreate}
           leftSection={<IconPlus size={17} />}
           radius="xl"
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="bg-brand hover:bg-[#c96300]"
         >
           Create Invoice
         </Button>
       </div>
+      {error && <p role="alert" className="text-sm font-medium text-red-600">{error}</p>}
 
       {/* Search */}
       <section className="overflow-hidden rounded-3xl border border-white/80 bg-white/85 shadow-soft">
@@ -136,19 +134,14 @@ export default function Invoices({
                     {/* Invoice ID */}
                     <Table.Td>
                       <EditableCell
-                        value={invoice.id}
-                        onSave={(value) => updateField(invoice, "id", value)}
+                        value={invoice.invoiceId}
+                        onSave={(value) => updateField(invoice, "invoiceId", value)}
                       />
                     </Table.Td>
 
                     {/* Client */}
                     <Table.Td>
-                      <EditableCell
-                        value={invoice.client ?? clientName(invoice.employerId)}
-                        onSave={(value) =>
-                          updateField(invoice, "client", value)
-                        }
-                      />
+                      <div className="px-2 py-1">{clientName(invoice.employmentId)}</div>
                     </Table.Td>
 
                     {/* Net Income */}
@@ -225,7 +218,7 @@ export default function Invoices({
                         <ActionIcon
                           variant="subtle"
                           color="red"
-                          onClick={() => onDelete(invoice.id)}
+                          onClick={() => onDelete(invoice.id).catch(() => {})}
                           aria-label="Delete invoice"
                         >
                           <IconTrash size={16} />

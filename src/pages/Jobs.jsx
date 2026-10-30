@@ -27,6 +27,67 @@ const Detail = ({ label, value }) => (
     </p>
   </div>
 );
+
+const descriptionHeadings = [
+  "About Our Client",
+  "Job Description",
+  "Responsibilities",
+  "Requirements",
+  "Qualifications",
+  "Benefits",
+];
+
+function getDescriptionLines(description = "") {
+  const headingPattern = new RegExp(
+    `\\b(${descriptionHeadings.join("|")})\\b`,
+    "gi",
+  );
+
+  return String(description)
+    .replace(/\s*[•●▪]\s*/g, "\n• ")
+    .replace(headingPattern, "\n$1\n")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function JobDescription({ description }) {
+  const lines = getDescriptionLines(description);
+
+  if (!lines.length) {
+    return <p className="text-sm leading-7 text-slate-500">No description provided.</p>;
+  }
+
+  return (
+    <div className="space-y-2 text-sm leading-7 text-slate-600">
+      {lines.map((line, index) => {
+        const isHeading = descriptionHeadings.some(
+          (heading) => heading.toLowerCase() === line.toLowerCase(),
+        );
+
+        if (isHeading) {
+          return (
+            <h4 key={`${index}-${line}`} className="pt-2 font-bold text-ink">
+              {line}
+            </h4>
+          );
+        }
+
+        if (line.startsWith("•")) {
+          return (
+            <p key={`${index}-${line}`} className="flex gap-2">
+              <span aria-hidden="true" className="text-brand">•</span>
+              <span>{line.slice(1).trim()}</span>
+            </p>
+          );
+        }
+
+        return <p key={`${index}-${line}`}>{line}</p>;
+      })}
+    </div>
+  );
+}
+
 export default function Jobs({
   jobs: initialJobs = [],
   onCreateEmployment,
@@ -111,11 +172,11 @@ export default function Jobs({
               <article
                 key={job.id}
                 onClick={() => setSelectedJob(job)}
-                className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-indigo-100 hover:shadow-md sm:p-6"
+                className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-[#ffe5cc] hover:shadow-md sm:p-6"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex min-w-0 items-start gap-4">
-                    <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 sm:flex">
+                    <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#fff1e3] text-brand sm:flex">
                       <IconBriefcase size={22} />
                     </div>
                     <div className="min-w-0">
@@ -176,7 +237,7 @@ export default function Jobs({
                     </Tooltip>
                     <Button
                       variant="light"
-                      color="indigo"
+                      color="orange"
                       rightSection={<IconArrowRight size={16} />}
                       onClick={() => setEmploymentJob(job)}
                     >
@@ -214,21 +275,32 @@ export default function Jobs({
         centered
         size="lg"
         radius="2xl"
-        styles={{ body: { overflowX: "hidden" } }}
+        styles={{
+          content: {
+            display: "flex",
+            flexDirection: "column",
+            maxHeight: "calc(100dvh - 2rem)",
+          },
+          header: { flex: "0 0 auto" },
+          body: {
+            flex: "1 1 auto",
+            minHeight: 0,
+            overflowX: "hidden",
+            overflowY: "auto",
+          },
+        }}
       >
         {selectedJob && (
           <Stack gap="md">
             <div>
-              <p className="text-sm font-semibold text-indigo-600">
+              <p className="text-sm font-semibold text-brand">
                 {selectedJob.clientName}
               </p>
               <h3 className="mt-1 font-display text-2xl font-extrabold text-ink">
                 {selectedJob.jobTitle}
               </h3>
             </div>
-            <p className="text-sm leading-6 text-slate-500">
-              {selectedJob.jobDescription}
-            </p>
+            <JobDescription description={selectedJob.jobDescription} />
             <div className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 [&>*]:min-w-0">
               <Detail label="Shift" value={selectedJob.shiftSchedule} />
               <Detail label="Languages" value={selectedJob.progLang} />
@@ -259,9 +331,19 @@ export default function Jobs({
             )}
             <Button
               radius="xl"
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="bg-brand hover:bg-[#c96300]"
               onClick={() => {
-                setEmploymentJob(selectedJob);
+                setEmploymentJob({
+                  clientName:
+                    selectedJob.clientName || selectedJob.employerName || "",
+                  jobDesc:
+                    selectedJob.jobDescription || selectedJob.jobDesc || "",
+                  shift: selectedJob.shiftSchedule || selectedJob.shift || "Not specified",
+                  priority: 2,
+                  contactPerson: selectedJob.contactPerson || "",
+                  contactPhone: selectedJob.contactPhone || selectedJob.phoneNumber || "",
+                  contactEmail: selectedJob.contactEmail || selectedJob.emailAddress || "",
+                });
                 setSelectedJob(null);
               }}
             >

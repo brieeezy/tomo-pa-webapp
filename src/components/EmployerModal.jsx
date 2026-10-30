@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   TextInput,
-  NumberInput,
   Select,
   Textarea,
   Button,
@@ -13,17 +12,12 @@ import {
 import { useForm } from "@mantine/form";
 const defaults = {
   clientName: "",
-  jobTitle: "",
-  jobDescription: "",
   shift: "",
-  priority: "Medium",
+  priority: 2,
+  jobDesc: "",
   contactPerson: "",
-  phoneNumber: "",
-  emailAddress: "",
-  incomeType: "Fixed Monthly",
-  amount: 0,
-  payoutSchedule: "Every 15th/30th",
-  taxType: "Service Contractor 8%",
+  contactPhone: "",
+  contactEmail: "",
 };
 export default function EmployerModal({
   opened,
@@ -31,31 +25,48 @@ export default function EmployerModal({
   onSave,
   initialValues,
 }) {
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const form = useForm({
     initialValues: defaults,
     validate: {
       clientName: (v) => (v.trim() ? null : "Client name is required"),
-      jobTitle: (v) => (v.trim() ? null : "Job title is required"),
-      jobDescription: (v) => (v.trim() ? null : "Job description is required"),
+      jobDesc: (v) => (v.trim() ? null : "Job description is required"),
+      shift: (v) => (v.trim() ? null : "Shift is required"),
       contactPerson: (v) => (v.trim() ? null : "Contact person is required"),
-      emailAddress: (v) =>
+      contactPhone: (v) => (v.trim() ? null : "Phone number is required"),
+      contactEmail: (v) =>
         /^\S+@\S+\.\S+$/.test(v) ? null : "Enter a valid email address",
-      amount: (v) => (v > 0 ? null : "Amount must be greater than zero"),
+      priority: (v) =>
+        Number.isInteger(v) && v >= 1 && v <= 3
+          ? null
+          : "Choose High, Medium, or Low",
     },
   });
   useEffect(() => {
-    if (opened) form.setValues({ ...defaults, ...initialValues });
+    if (opened) {
+      form.setValues({ ...defaults, ...initialValues });
+      setSaveError("");
+    }
   }, [opened, initialValues]);
-  const submit = (values) => {
-    onSave({ ...values, id: Date.now() });
-    form.reset();
-    onClose();
+  const submit = async (values) => {
+    setSaving(true);
+    setSaveError("");
+    try {
+      await onSave(values);
+      form.reset();
+      onClose();
+    } catch {
+      setSaveError("The employer could not be saved. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Add Employment"
+      title="Add employer"
       centered
       size="lg"
     >
@@ -65,23 +76,26 @@ export default function EmployerModal({
             label="Client name"
             {...form.getInputProps("clientName")}
           />
-          <TextInput label="Job title" {...form.getInputProps("jobTitle")} />
           <Textarea
             label="Job description"
             minRows={2}
             autosize
-            {...form.getInputProps("jobDescription")}
+            {...form.getInputProps("jobDesc")}
           />
           <Group grow>
-            <Select
-              label="Shift"
-              data={["Day Shift", "Night Shift", "Flexible"]}
-              {...form.getInputProps("shift")}
-            />
+            <TextInput label="Shift" placeholder="Day, night, flexible..." {...form.getInputProps("shift")} />
             <Select
               label="Priority"
-              data={["Low", "Medium", "High", "Urgent"]}
-              {...form.getInputProps("priority")}
+              data={[
+                { value: "3", label: "High" },
+                { value: "2", label: "Medium" },
+                { value: "1", label: "Low" },
+              ]}
+              value={String(form.values.priority)}
+              onChange={(value) =>
+                form.setFieldValue("priority", Number(value))
+              }
+              error={form.errors.priority}
             />
           </Group>
           <Divider label="Contact information" />
@@ -92,57 +106,19 @@ export default function EmployerModal({
           <Group grow>
             <TextInput
               label="Phone number"
-              {...form.getInputProps("phoneNumber")}
+              {...form.getInputProps("contactPhone")}
             />
             <TextInput
               label="Email address"
-              {...form.getInputProps("emailAddress")}
+              {...form.getInputProps("contactEmail")}
             />
           </Group>
-          <Divider label="Income" />
-          <Select
-            label="Income type"
-            data={[
-              "Fixed Monthly",
-              "Commission Based",
-              "Fixed Monthly/Commission Based",
-            ]}
-            {...form.getInputProps("incomeType")}
-          />
-          <NumberInput
-            label="Amount"
-            min={0}
-            thousandSeparator=","
-            decimalScale={2}
-            {...form.getInputProps("amount")}
-          />
-          <Group grow>
-            <Select
-              label="Payout schedule"
-              data={[
-                "Every 15th/30th",
-                "Every 15th",
-                "Every 30th",
-                "Weekly",
-                "Monthly",
-              ]}
-              {...form.getInputProps("payoutSchedule")}
-            />
-            <Select
-              label="Tax type"
-              data={[
-                "Service Contractor 8%",
-                "Service Contractor (Graduated)",
-                "FTE (Tax Table)",
-              ]}
-              {...form.getInputProps("taxType")}
-            />
-          </Group>
+          {saveError && <p role="alert" className="text-sm text-red-600">{saveError}</p>}
           <Group justify="flex-end" mt="md">
-            <Button variant="default" onClick={onClose}>
+            <Button variant="default" onClick={onClose} disabled={saving}>
               Cancel
             </Button>
-            <Button type="submit">Add Employment</Button>
+            <Button type="submit" loading={saving}>Save employer</Button>
           </Group>
         </Stack>
       </form>

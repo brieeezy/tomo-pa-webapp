@@ -21,7 +21,7 @@ export default function Overview({ invoices, employers, onNavigate }) {
     .filter((i) => i.status !== "Paid")
     .reduce((sum, i) => sum + calculateInvoice(i), 0);
   const employerName = (id) =>
-    employers.find((e) => String(e.id) === String(id))?.name ||
+    employers.find((e) => String(e.id) === String(id))?.clientName ||
     "Unknown employer";
   return (
     <div className="space-y-7">
@@ -34,14 +34,14 @@ export default function Overview({ invoices, employers, onNavigate }) {
             Good afternoon, JM <span>✦</span>
           </h2>
           <p className="mt-2 text-sm text-slate-500">
-            Here’s what’s happening with your ledger.
+            Here’s what’s happening with your Tomo workspace.
           </p>
         </div>
         <Button
           radius="xl"
           leftSection={<IconReceipt size={17} />}
           onClick={() => onNavigate("invoices")}
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="bg-brand hover:bg-[#c96300]"
         >
           View invoices
         </Button>
@@ -80,7 +80,7 @@ export default function Overview({ invoices, employers, onNavigate }) {
           </div>
           <button
             onClick={() => onNavigate("invoices")}
-            className="flex items-center gap-1 text-sm font-bold text-indigo-600"
+            className="flex items-center gap-1 text-sm font-bold text-brand"
           >
             All invoices <IconArrowUpRight size={16} />
           </button>
@@ -100,13 +100,10 @@ export default function Overview({ invoices, employers, onNavigate }) {
               {invoices.slice(0, 5).map((i) => (
                 <Table.Tr key={i.id}>
                   <Table.Td>
-                    <span className="font-bold text-ink">{i.id}</span>
-                    <p className="mt-1 text-xs text-slate-400">
-                      {i.description}
-                    </p>
+                    <span className="font-bold text-ink">{i.invoiceId || i.id}</span>
                   </Table.Td>
-                  <Table.Td>{employerName(i.employerId)}</Table.Td>
-                  <Table.Td>{formatDate(i.issueDate)}</Table.Td>
+                  <Table.Td>{employerName(i.employmentId)}</Table.Td>
+                  <Table.Td>{formatDate(i.postedDate || i.issueDate)}</Table.Td>
                   <Table.Td className="font-bold">
                     {formatMoney(calculateInvoice(i))}
                   </Table.Td>

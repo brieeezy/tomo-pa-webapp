@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Select,
@@ -19,7 +19,10 @@ const TAX_TYPES = [
   "FTE (Tax Table)",
 ];
 
-const INVOICE_STATUSES = ["Pending", "Paid", "Void", "Unpaid"];
+const INVOICE_STATUSES = ["Pending", "Paid", "Overdue", "Unpaid", "Void"];
+
+const createInvoiceId = () =>
+  `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`;
 
 const formatDate = (date) => {
   if (!date) return null;
@@ -55,12 +58,12 @@ export default function InvoiceModal({
   employers = [],
   onSave,
 }) {
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const form = useForm({
     initialValues: {
-      employerId: "",
-      invoiceId: `INV-${new Date().getFullYear()}-${String(Date.now()).slice(
-        -4,
-      )}`,
+      employmentId: "",
+      invoiceId: createInvoiceId(),
       postedDate: new Date(),
       status: "Pending",
       taxType: "",
@@ -68,7 +71,7 @@ export default function InvoiceModal({
     },
 
     validate: {
-      employerId: (value) => (value ? null : "Choose an employer"),
+      employmentId: (value) => (value ? null : "Choose an employer"),
 
       postedDate: (value) => (value ? null : "Posted date is required"),
 
@@ -77,12 +80,26 @@ export default function InvoiceModal({
     },
   });
 
+  useEffect(() => {
+    if (!opened) return;
+    form.setValues({
+      employmentId: "",
+      invoiceId: createInvoiceId(),
+      postedDate: new Date(),
+      status: "Pending",
+      taxType: "",
+      netIncome: 0,
+    });
+    setSaveError("");
+  }, [opened]);
+
   const selectedEmployer = useMemo(
     () =>
       employers.find(
-        (employer) => String(employer.id) === String(form.values.employerId),
+        (employer) =>
+          String(employer.id) === String(form.values.employmentId),
       ),
-    [employers, form.values.employerId],
+    [employers, form.values.employmentId],
   );
 
   const taxType = form.values.taxType || selectedEmployer?.taxType || "";
@@ -100,26 +117,33 @@ export default function InvoiceModal({
       (item) => String(item.id) === String(employerId),
     );
 
-    form.setFieldValue("employerId", employerId);
+    form.setFieldValue("employmentId", employerId);
     form.setFieldValue("netIncome", employer?.amount ?? 0);
     form.setFieldValue("taxType", employer?.taxType ?? "");
   };
 
-  const submit = (values) => {
-    onSave({
-      ...values,
-      employerId: String(values.employerId),
-      postedDate: formatDate(values.postedDate),
-      netIncome: Number(values.netIncome),
-      taxType,
-      tax,
-      deductibles,
-      grossIncome,
-      id: values.invoiceId,
-    });
-
-    form.reset();
-    onClose();
+  const submit = async (values) => {
+    setSaving(true);
+    setSaveError("");
+    try {
+      await onSave({
+        invoiceId: values.invoiceId,
+        employmentId: Number(values.employmentId),
+        postedDate: formatDate(values.postedDate),
+        netIncome: Number(values.netIncome),
+        status: values.status,
+        taxType,
+        tax,
+        deductibles,
+        grossIncome,
+      });
+      form.reset();
+      onClose();
+    } catch {
+      setSaveError("The invoice could not be saved. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -129,7 +153,7 @@ export default function InvoiceModal({
       title={
         <div>
           <p className="font-display text-xl font-extrabold text-ink">
-            Invoice Modal
+            Create Invoice
           </p>
 
           <p className="mt-1 text-sm font-normal text-slate-400">
@@ -163,7 +187,7 @@ export default function InvoiceModal({
               label: employer.clientName || employer.name,
             }))}
             searchable
-            {...form.getInputProps("employerId")}
+            {...form.getInputProps("employmentId")}
             onChange={handleEmployerChange}
           />
 
@@ -224,15 +248,17 @@ export default function InvoiceModal({
           </div>
 
           {/* Gross Income */}
-          <div className="rounded-2xl bg-indigo-50/80 p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">
+          <div className="rounded-2xl bg-[#fff1e3]/80 p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-brand">
               Gross Income
             </p>
 
-            <p className="mt-1 font-display text-2xl font-extrabold text-indigo-700">
+            <p className="mt-1 font-display text-2xl font-extrabold text-[#c96300]">
               {formatMoney(grossIncome)}
             </p>
           </div>
+
+          {saveError && <Text size="sm" c="red" role="alert">{saveError}</Text>}
 
           {/* Actions */}
           <Group justify="flex-end" mt="md">
@@ -243,7 +269,8 @@ export default function InvoiceModal({
             <Button
               type="submit"
               radius="xl"
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="bg-brand hover:bg-[#c96300]"
+              loading={saving}
             >
               Save Invoice
             </Button>

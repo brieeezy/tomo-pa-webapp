@@ -3,10 +3,11 @@ export default function StatCard({
   value,
   note,
   icon: Icon,
-  tint = "indigo",
+  tint = "aqua",
 }) {
   const colors = {
-    indigo: "bg-indigo-50 text-indigo-600",
+    orange: "bg-[#fff1e3] text-brand",
+    aqua: "bg-[#e8f7f5] text-space",
     emerald: "bg-emerald-50 text-emerald-600",
     amber: "bg-amber-50 text-amber-600",
   };
