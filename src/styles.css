@@ -550,6 +550,74 @@ body {
 .tm-footer .flex img { width: 32px; height: 32px; }
 .tm-footer .flex p:first-child { font-size: 14px; }
 .tm-footer .flex p:last-child { font-size: 7px; }
+/* Brand palette for the public marketing page */
+.tomo-marketing {
+  --tm-ink: #392f5a;
+  --tm-muted: #706a7a;
+  --tm-orange: #ff8811;
+  --tm-orange-hover: #e97600;
+  --tm-jasmine: #f4d06f;
+  --tm-aqua: #9dd9d2;
+  --tm-aqua-deep: #49877f;
+  --tm-aqua-soft: #e8f7f5;
+  --tm-pearl: #fff8f0;
+  color: var(--tm-ink);
+  background: radial-gradient(ellipse at 78% 18%, #fff1d2 0, transparent 34%), var(--tm-pearl);
+}
+.tomo-marketing .tm-header nav a { color: var(--tm-muted); }
+.tomo-marketing .tm-header nav a:hover,
+.tomo-marketing .tm-signin:hover,
+.tomo-marketing .tm-footer button:hover { color: var(--tm-orange-hover); }
+.tomo-marketing .tm-signin,
+.tomo-marketing .tm-footer button { color: var(--tm-ink); }
+.tomo-marketing .tm-eyebrow,
+.tomo-marketing .tm-section-label { color: #c76707; }
+.tomo-marketing .tm-eyebrow span,
+.tomo-marketing .tm-assurance span { background: var(--tm-aqua-soft); color: var(--tm-aqua-deep); }
+.tomo-marketing .tm-hero h1 em { color: var(--tm-orange); }
+.tomo-marketing .tm-primary { background: var(--tm-orange); color: white; box-shadow: 0 9px 24px #ff881133; }
+.tomo-marketing .tm-primary:hover { background: var(--tm-orange-hover); box-shadow: 0 13px 25px #ff88113d; }
+.tomo-marketing .tm-secondary { color: #51476a; }
+.tomo-marketing .tm-secondary:hover { color: var(--tm-orange-hover); }
+.tomo-marketing .tm-orbit-two { border-color: #f4d06f88; }
+.tomo-marketing .tm-sparkle { color: var(--tm-orange); }
+.tomo-marketing .tm-dashboard { border-color: #392f5a18; background: #fffefd; box-shadow: 0 30px 80px #392f5a1a, 0 5px 18px #392f5a0b; }
+.tomo-marketing .tm-dash-top,
+.tomo-marketing .tm-dash-body > aside { border-color: #e8f0ee; }
+.tomo-marketing .tm-dots i:first-child { background: var(--tm-orange); }
+.tomo-marketing .tm-avatar { background: #392f5a; color: var(--tm-aqua); }
+.tomo-marketing .tm-dash-body > aside > span.selected { background: #392f5a; color: white; }
+.tomo-marketing .tm-dash-logo { background: var(--tm-orange); }
+.tomo-marketing .tm-stat-grid > div,
+.tomo-marketing .tm-activity { border-color: #e7efed; }
+.tomo-marketing .tm-stat-grid .aqua-note,
+.tomo-marketing .tm-activity-head span,
+.tomo-marketing .tm-activity strong.paid { color: var(--tm-aqua-deep); }
+.tomo-marketing .tm-activity .orange-icon,
+.tomo-marketing .tm-activity .aqua-icon,
+.tomo-marketing .tm-feature.aqua .tm-feature-top > span,
+.tomo-marketing .tm-feature.orange .tm-feature-top > span,
+.tomo-marketing .tm-feature.jasmine .tm-feature-top > span { background: var(--tm-aqua-soft); color: var(--tm-aqua-deep); }
+.tomo-marketing .tm-activity > div:not(.tm-activity-head) { border-color: #edf3f1; }
+.tomo-marketing .tm-assistant,
+.tomo-marketing .tm-about-mark { background: #392f5a; }
+.tomo-marketing .tm-features .tm-section-heading p,
+.tomo-marketing .tm-about-copy p,
+.tomo-marketing .tm-work .tm-section-heading p { color: #6d8588; }
+.tomo-marketing .tm-feature,
+.tomo-marketing .tm-project { border-color: #392f5a14; background: #fffefd; box-shadow: 0 8px 28px #392f5a08; }
+.tomo-marketing .tm-about { border-color: #9dd9d2aa; background: linear-gradient(110deg, #e8f7f5 0%, #f4fbf9 55%, #fff8f0 100%); }
+.tomo-marketing .tm-about-years b { color: var(--tm-ink); }
+.tomo-marketing .tm-about-years i { background: #9dd9d2; }
+.tomo-marketing .tm-about-copy a,
+.tomo-marketing .tm-project a { color: var(--tm-aqua-deep); }
+.tomo-marketing .tm-tech span { color: #9dd9d2; }
+.tomo-marketing .tm-cta { background: linear-gradient(115deg, #392f5a, #514574); }
+.tomo-marketing .tm-cta-icon { background: #9dd9d2; color: #392f5a; }
+.tomo-marketing .tm-cta .tm-section-label { color: #9dd9d2; }
+.tomo-marketing .tm-light-button { background: #fff8f0; color: #392f5a; }
+.tomo-marketing .tm-footer { border-color: #392f5a18; }
+.tomo-marketing .tm-footer > span { color: #928b98; }
 @media (max-width: 900px) {
   .tm-hero { grid-template-columns: 1fr; gap: 4px; }
   .tm-hero-copy { max-width: 600px; }

@@ -34,19 +34,14 @@ const pageTitles = {
 export default function App() {
   const [path, setPath] = useState(window.location.pathname);
   const [authenticated, setAuthenticated] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(
-    window.location.pathname === "/login" || window.location.pathname === "/app",
-  );
-
   useEffect(() => {
     const syncPath = () => {
       const currentPath = window.location.pathname;
       setPath(currentPath);
-      setLoginOpen(currentPath === "/login" || (currentPath === "/app" && !authenticated));
     };
     window.addEventListener("popstate", syncPath);
     return () => window.removeEventListener("popstate", syncPath);
-  }, [authenticated]);
+  }, []);
 
   const navigate = (nextPath) => {
     window.history.pushState({}, "", nextPath);
@@ -66,22 +61,15 @@ export default function App() {
     navigate("/");
   };
 
-  const openLogin = () => {
-    window.history.pushState({}, "", "/login");
-    setPath("/login");
-    setLoginOpen(true);
-  };
-
   const closeLogin = () => {
     window.history.pushState({}, "", "/");
     setPath("/");
-    setLoginOpen(false);
   };
 
   if (path === "/app" && authenticated) return <WorkspaceApp onLogout={logout} />;
   if (path === "/login") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   if (path === "/workspace") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
-  return <LandingPage onLogin={login} loginOpen={loginOpen} onOpenLogin={openLogin} onCloseLogin={closeLogin} />;
+  return <LandingPage />;
 }
 
 function WorkspaceApp({ onLogout }) {
