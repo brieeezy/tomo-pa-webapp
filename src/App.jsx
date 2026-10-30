@@ -67,9 +67,9 @@ export default function App() {
   };
 
   const openLogin = () => {
-    window.history.pushState({}, "", "/workspace");
-    setPath("/workspace");
-    setLoginOpen(false);
+    window.history.pushState({}, "", "/login");
+    setPath("/login");
+    setLoginOpen(true);
   };
 
   const closeLogin = () => {
@@ -79,7 +79,8 @@ export default function App() {
   };
 
   if (path === "/app" && authenticated) return <WorkspaceApp onLogout={logout} />;
-  if (path === "/workspace" || path === "/login") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} initialLoginOpen={path === "/login"} />;
+  if (path === "/login") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
+  if (path === "/workspace") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   return <LandingPage onLogin={login} loginOpen={loginOpen} onOpenLogin={openLogin} onCloseLogin={closeLogin} />;
 }
 
