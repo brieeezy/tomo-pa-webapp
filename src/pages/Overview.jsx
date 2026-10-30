@@ -31,7 +31,7 @@ export default function Overview({ invoices, employers, onNavigate }) {
             Tuesday, October 27, 2026
           </p>
           <h2 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-ink">
-            Good afternoon, JM <span>✦</span>
+            Meow, JM <span aria-hidden="true">🐾</span>
           </h2>
           <p className="mt-2 text-sm text-slate-500">
             Here’s what’s happening with your Tomo workspace.

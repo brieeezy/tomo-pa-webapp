@@ -275,11 +275,12 @@ body {
 .workspace-back { position: absolute; top: 28px; left: max(24px, calc((100vw - 1200px) / 2)); border: 0; background: transparent; color: #625a70; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .workspace-welcome-content { display: flex; width: min(100%, 900px); flex-direction: column; align-items: center; text-align: center; }
 .workspace-welcome-content > .flex { flex-direction: column; gap: 12px; }
-.workspace-welcome-content > .flex img { width: 280px; height: 280px; border-radius: 64px; }
+.workspace-welcome-content > .flex img { width: clamp(320px, 42vw, 440px); height: clamp(320px, 42vw, 440px); border-radius: 88px; }
 .workspace-welcome-content > .flex > div { text-align: center; }
-.workspace-welcome-content > .flex p:first-child { margin: 0; font-size: 36px; }
-.workspace-welcome-content > .flex p:last-child { margin-top: 2px; font-size: 8px; }
-.workspace-welcome-content h1 { margin: 35px 0 27px; font-family: Manrope, sans-serif; font-size: clamp(30px, 5vw, 46px); font-weight: 800; letter-spacing: -.065em; line-height: 1.16; }
+.workspace-welcome-content > .flex img { border-radius: 50%; }
+.workspace-welcome-content > .flex p:first-child { margin: 0; font-size: 48px; font-weight: 900; line-height: 1; }
+.workspace-welcome-content > .flex p:last-child { margin: 6px 0 0; color: #817995; font-size: 10px; font-weight: 700; letter-spacing: .2em; line-height: 1.3; }
+.workspace-welcome-subtitle { margin: 28px 0 27px; color: #625a70; font-family: Manrope, sans-serif; font-size: clamp(16px, 2.2vw, 21px); font-weight: 600; line-height: 1.5; }
 @media (max-width: 620px) { .workspace-welcome-content > .flex img { width: min(72vw, 240px); height: min(72vw, 240px); border-radius: 52px; } .workspace-back { top: 18px; left: 18px; } }
 
 /* Consultancy profile sections */

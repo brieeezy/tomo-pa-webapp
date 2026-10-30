@@ -2,8 +2,7 @@ import {
   IconLayoutDashboard,
   IconReceipt,
   IconUsers,
-  IconSettings,
-  IconHelpCircle,
+  IconBriefcase,
 } from "@tabler/icons-react";
 import Brand from "./Brand";
 
@@ -11,7 +10,7 @@ const links = [
   { id: "overview", label: "Overview", icon: IconLayoutDashboard },
   { id: "employers", label: "Employers", icon: IconUsers },
   { id: "invoices", label: "Invoices", icon: IconReceipt },
-  { id: "jobs", label: "Job", icon: IconReceipt },
+  { id: "jobs", label: "Jobs", icon: IconBriefcase },
 ];
 
 export default function Sidebar({ active, onNavigate }) {
@@ -34,12 +33,6 @@ export default function Sidebar({ active, onNavigate }) {
         ))}
       </nav>
       <div className="mt-auto space-y-1">
-        <button className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold text-slate-500 hover:bg-[#fff1e3]">
-          <IconSettings size={19} /> Settings
-        </button>
-        <button className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold text-slate-500 hover:bg-[#fff1e3]">
-          <IconHelpCircle size={19} /> Help center
-        </button>
         <div className="mt-5 rounded-2xl border border-[#9dd9d2]/60 bg-gradient-to-br from-[#e8f7f5] to-[#fff8f0] p-4">
           <p className="text-xs font-bold text-space">
             Your workspace, in sync

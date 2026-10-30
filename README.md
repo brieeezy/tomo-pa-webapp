@@ -60,10 +60,8 @@ prefer a server-managed session or short-lived token instead of Basic auth.
 The always-visible assistant sidebar sits to the right of the app content and
 sends messages to `POST /api/rag/messages`. The Vite development proxy removes
 the `/api` prefix, forwarding the request to the Tomo backend's
-`POST /rag/messages` controller. Each request contains `conversationId`,
-`message`, and `knowledgeBaseIds`; the backend returns `conversationId` and
-`answer`, and stores conversation history itself. Set `VITE_RAG_CHAT_API_URL`
-to override the endpoint and `VITE_RAG_KNOWLEDGE_BASE_IDS` to a comma-separated
-list of knowledge-base IDs. The default ID `1` follows the backend RAG guide's
-example. Chat authentication uses the same credentials entered on the login
-page as the other API clients.
+`POST /rag/messages` controller. Each request contains `conversationId` and
+`message`; the backend returns `conversationId`, message IDs, `answer`, and
+optional `sources`, and stores conversation history itself. Set
+`VITE_RAG_CHAT_API_URL` to override the endpoint. Chat authentication uses the
+same credentials entered on the login page as the other API clients.

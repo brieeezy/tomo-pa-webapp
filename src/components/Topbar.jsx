@@ -1,4 +1,4 @@
-import { IconBell, IconSearch, IconMenu2, IconLogout } from "@tabler/icons-react";
+import { IconBell, IconMenu2, IconLogout } from "@tabler/icons-react";
 import { Popover } from "@mantine/core";
 import { useState } from "react";
 
@@ -23,9 +23,6 @@ export default function Topbar({ title, onMenu, onLogout, newJobs = [], onOpenJo
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <div className="hidden items-center gap-2 rounded-xl border border-white bg-white/80 px-3 py-2 text-sm text-slate-400 sm:flex">
-          <IconSearch size={16} /> Search
-        </div>
         <Popover opened={notificationsOpen} onChange={setNotificationsOpen} position="bottom-end" shadow="md" width={320} withinPortal>
           <Popover.Target>
             <button

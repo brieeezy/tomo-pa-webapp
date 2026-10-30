@@ -30,7 +30,7 @@ export default function WorkspaceLandingPage({ onLogin, onBack, initialLoginOpen
       <button className="workspace-back" onClick={onBack}>← Back to Tomo</button>
       <section className="workspace-welcome-content">
         <Brand />
-        <h1>Make room for the work that matters.</h1>
+        <p className="workspace-welcome-subtitle">Make room for the work that matters. <span aria-hidden="true">🐾</span></p>
         <Button className="tomo-landing-button" onClick={() => setLoginOpen(true)} rightSection={<IconArrowRight size={17} />}>Sign in</Button>
       </section>
       <Modal opened={loginOpen} onClose={() => setLoginOpen(false)} title="Sign in to Tomo" centered size="md" radius="lg">

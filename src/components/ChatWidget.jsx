@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ActionIcon, Group, Paper, ScrollArea, Stack, Text, TextInput } from "@mantine/core";
-import { IconArrowUp } from "@tabler/icons-react";
+import { IconPaw } from "@tabler/icons-react";
 import { sendChatMessage } from "../services/chatApi";
 import tomoLogo from "../assets/tomo-logo.svg";
 
@@ -40,14 +40,27 @@ export default function ChatWidget() {
       setMessages((current) => [...current, { role: "assistant", content: response.answer }]);
     } catch (error) {
       setRetryMessage(content);
-      const detail = error.response?.data?.message || error.response?.data?.error;
+      const responseData = error.response?.data;
+      const detail = typeof responseData?.message === "string"
+        ? responseData.message
+        : typeof responseData?.error === "string"
+          ? responseData.error
+          : null;
+      const status = error.response?.status;
+      const failureMessage = status === 401 || status === 403
+        ? "The assistant rejected your sign-in. Sign out and sign in again, then retry."
+        : status
+          ? `The assistant request failed (${status}). Check the chat service and try again.`
+          : error.code === "ECONNABORTED"
+            ? "The assistant took too long to respond. Please retry."
+            : error.message?.includes("knowledge-base IDs") || error.message?.includes("configured endpoint")
+              ? error.message
+              : "I couldn’t reach the assistant. Check your connection and try again.";
       setMessages((current) => [
         ...current,
         {
           role: "error",
-          content: detail || (error.response?.status
-            ? `The assistant request failed (${error.response.status}). Check the chat service and try again.`
-            : "I couldn’t reach the assistant. Check your connection and try again."),
+          content: detail || failureMessage,
         },
       ]);
       console.error("Chat request failed:", error);
@@ -136,7 +149,7 @@ export default function ChatWidget() {
             aria-label="Send message"
             disabled={sending || !input.trim()}
           >
-            <IconArrowUp size={19} />
+            <IconPaw size={19} />
           </ActionIcon>
         </form>
       </Paper>
