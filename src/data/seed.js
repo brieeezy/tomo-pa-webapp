@@ -4,7 +4,7 @@ export const seedEmployers = [
     name: "Northstar Studio",
     email: "billing@northstar.studio",
     rate: 42,
-    currency: "USD",
+    currency: "PHP",
     status: "Active",
   },
   {
@@ -12,7 +12,7 @@ export const seedEmployers = [
     name: "Cedar Labs",
     email: "finance@cedarlabs.io",
     rate: 38,
-    currency: "USD",
+    currency: "PHP",
     status: "Active",
   },
   {
@@ -20,7 +20,7 @@ export const seedEmployers = [
     name: "Atlas Digital",
     email: "accounts@atlas.digital",
     rate: 35,
-    currency: "USD",
+    currency: "PHP",
     status: "Paused",
   },
 ];

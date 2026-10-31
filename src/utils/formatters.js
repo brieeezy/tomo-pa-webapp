@@ -1,5 +1,5 @@
-export const formatMoney = (amount, currency = "USD") =>
-  new Intl.NumberFormat("en-US", {
+export const formatMoney = (amount, currency = "PHP") =>
+  new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency,
     maximumFractionDigits: 2,
@@ -7,11 +7,18 @@ export const formatMoney = (amount, currency = "USD") =>
 
 export const formatDate = (date) => {
   if (!date) return "—";
+  const value =
+    date instanceof Date
+      ? date
+      : /^\d{4}-\d{2}-\d{2}$/.test(String(date))
+        ? new Date(`${date}T00:00:00`)
+        : new Date(date);
+  if (Number.isNaN(value.getTime())) return String(date);
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-  }).format(new Date(`${date}T00:00:00`));
+  }).format(value);
 };
 
 export const calculateInvoice = (invoice) => {
