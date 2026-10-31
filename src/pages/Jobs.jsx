@@ -356,6 +356,10 @@ export default function Jobs({
               className="bg-brand hover:bg-[#c96300]"
               onClick={() => {
                 setEmploymentJob({
+                  incomeType: selectedJob.incomeType,
+                  amount: selectedJob.amount,
+                  currency: selectedJob.currency,
+                  payRange: selectedJob.payRange,
                   clientName:
                     selectedJob.clientName || selectedJob.employerName || "",
                   jobDesc:

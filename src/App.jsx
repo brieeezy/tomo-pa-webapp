@@ -96,6 +96,7 @@ function WorkspaceApp({ onLogout }) {
     loading: employersLoading,
     error: employersError,
     create: createEmployer,
+    update: updateEmployer,
     remove: deleteEmployer,
   } = useEmployments();
 
@@ -137,6 +138,7 @@ function WorkspaceApp({ onLogout }) {
         employers={employers}
         onCreate={() => setEmployerModal(true)}
         onDelete={deleteEmployer}
+        onUpdate={updateEmployer}
         error={employersError}
       />
     ) : active === "jobs" ? (

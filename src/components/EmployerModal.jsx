@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Modal,
   TextInput,
+  NumberInput,
   Select,
   Textarea,
   Button,
@@ -12,6 +13,9 @@ import {
 import { useForm } from "@mantine/form";
 const defaults = {
   clientName: "",
+  incomeType: "",
+  amount: "",
+  currency: "PHP",
   shift: "",
   priority: 2,
   jobDesc: "",
@@ -24,6 +28,7 @@ export default function EmployerModal({
   onClose,
   onSave,
   initialValues,
+  editing = false,
 }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -66,7 +71,7 @@ export default function EmployerModal({
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Add employer"
+      title={editing ? "Edit client" : "Add client"}
       centered
       size="lg"
     >
@@ -76,6 +81,26 @@ export default function EmployerModal({
             label="Client name"
             {...form.getInputProps("clientName")}
           />
+          <Divider label="Income" />
+          <Group grow>
+            <TextInput
+              label="Income type"
+              placeholder="Fixed monthly, hourly, commission..."
+              {...form.getInputProps("incomeType")}
+            />
+            <NumberInput
+              label="Income amount"
+              min={0}
+              thousandSeparator="," 
+              {...form.getInputProps("amount")}
+            />
+            <TextInput
+              label="Currency"
+              placeholder="PHP"
+              maxLength={3}
+              {...form.getInputProps("currency")}
+            />
+          </Group>
           <Textarea
             label="Job description"
             minRows={2}
@@ -118,7 +143,7 @@ export default function EmployerModal({
             <Button variant="default" onClick={onClose} disabled={saving}>
               Cancel
             </Button>
-            <Button type="submit" loading={saving}>Save employer</Button>
+            <Button type="submit" loading={saving}>{editing ? "Save changes" : "Save client"}</Button>
           </Group>
         </Stack>
       </form>

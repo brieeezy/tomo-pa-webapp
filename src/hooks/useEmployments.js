@@ -3,6 +3,7 @@ import {
   createEmployment as createEmploymentRequest,
   deleteEmployment as deleteEmploymentRequest,
   getEmployments,
+  updateEmployment as updateEmploymentRequest,
 } from "../services/employmentsApi";
 
 export function useEmployments() {
@@ -49,5 +50,19 @@ export function useEmployments() {
     }
   };
 
-  return { employers: employments, loading, error, create, remove };
+  const update = async (id, employment) => {
+    setError("");
+    try {
+      const updated = await updateEmploymentRequest(id, employment);
+      setEmployments((current) => current.map((item) =>
+        String(item.id) === String(id) ? { ...item, ...employment, ...updated } : item,
+      ));
+      return updated;
+    } catch (requestError) {
+      setError("Could not update the employer. Check the Tomo service and try again.");
+      throw requestError;
+    }
+  };
+
+  return { employers: employments, loading, error, create, update, remove };
 }

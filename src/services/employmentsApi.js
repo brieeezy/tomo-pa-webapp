@@ -19,6 +19,11 @@ export async function createEmployment(employment) {
   return response.data;
 }
 
+export async function updateEmployment(id, employment) {
+  const response = await api.put(`/${id}`, employment);
+  return response.data;
+}
+
 export async function deleteEmployment(id) {
   await api.delete(`/${id}`);
 }
