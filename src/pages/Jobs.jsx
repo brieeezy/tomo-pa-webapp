@@ -137,6 +137,14 @@ export default function Jobs({
     onCreateEmployment?.({ ...employmentJob, ...values });
     setEmploymentJob(null);
   };
+  const openEmployment = (values) => {
+    const clientName = values.clientName || values.employerName || "";
+    setEmploymentJob({
+      ...values,
+      clientName,
+      contactPerson: values.contactPerson || clientName,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -176,7 +184,7 @@ export default function Jobs({
                 onClick={() => { onViewJob?.(job); setSelectedJob(job); }}
                 className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-[#ffe5cc] hover:shadow-md sm:p-6"
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex min-w-0 items-start gap-4">
                     <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#fff1e3] text-brand sm:flex">
                       <IconBriefcase size={22} />
@@ -245,10 +253,9 @@ export default function Jobs({
                     <Button
                       variant="light"
                       color="orange"
-                      rightSection={<IconArrowRight size={16} />}
-                      onClick={() => setEmploymentJob(job)}
+                      onClick={() => openEmployment(job)}
                     >
-                      Add Employment
+                      Add Client
                     </Button>
                   </div>
                 </div>
@@ -276,7 +283,7 @@ export default function Jobs({
             </div>
             <div>
               <p className="font-display text-xl font-extrabold text-ink">
-                Job details
+                Job Details
               </p>
               <p className="mt-1 text-sm font-normal text-slate-400">
                 Role details from Tomo job listings.
@@ -308,7 +315,7 @@ export default function Jobs({
         {selectedJob && (
           <Stack gap="md">
             <div>
-              <p className="text-sm font-semibold text-brand">
+              <p className="text-base font-semibold text-brand">
                 {selectedJob.clientName}
               </p>
               <h3 className="mt-1 font-display text-2xl font-extrabold text-ink">
@@ -318,7 +325,6 @@ export default function Jobs({
             <JobDescription description={selectedJob.jobDescription} />
             <div className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 [&>*]:min-w-0">
               <Detail label="Shift" value={selectedJob.shiftSchedule} />
-              <Detail label="Languages" value={selectedJob.progLang} />
               <Detail label="Location" value={selectedJob.location} />
               <Detail
                 label="Employment type"
@@ -348,14 +354,14 @@ export default function Jobs({
                 radius="xl"
                 variant="light"
               >
-                View application
+                View application link
               </Button>
             )}
             <Button
               radius="xl"
               className="bg-brand hover:bg-[#c96300]"
               onClick={() => {
-                setEmploymentJob({
+                openEmployment({
                   incomeType: selectedJob.incomeType,
                   amount: selectedJob.amount,
                   currency: selectedJob.currency,
@@ -373,7 +379,7 @@ export default function Jobs({
                 setSelectedJob(null);
               }}
             >
-              Add Employment
+              Add Client
             </Button>
           </Stack>
         )}

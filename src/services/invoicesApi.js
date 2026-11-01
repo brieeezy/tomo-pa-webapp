@@ -35,7 +35,7 @@ export async function createInvoice(invoice) {
 
 export async function updateInvoice(id, invoice) {
   const response = await api.put(`/${id}`, toInvoiceDTO(invoice));
-  return response.data;
+  return response.data ?? invoice;
 }
 
 export async function deleteInvoice(id) {

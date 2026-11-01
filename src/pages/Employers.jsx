@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { Badge, Button, SimpleGrid, Modal, Text, Group, Stack } from "@mantine/core";
-import { IconPlus, IconTrash, IconBuilding, IconPencil } from "@tabler/icons-react";
+import { Avatar, Badge, Button, SimpleGrid, Modal, Text, Group, Stack } from "@mantine/core";
+import {
+  IconBuilding,
+  IconPlus,
+  IconTrash,
+  IconPencil,
+} from "@tabler/icons-react";
 import EmployerModal from "../components/EmployerModal";
 
 const priorityLabels = { 1: "Low", 2: "Medium", 3: "High" };
@@ -48,13 +53,13 @@ export default function Employers({
           radius="xl"
           className="bg-brand hover:bg-[#c96300]"
         >
-          Add client
+          Add Client
         </Button>
       </div>
       {error && <p role="alert" className="text-sm font-medium text-red-600">{error}</p>}
       {/* Employer Cards */}
       {employers.length > 0 ? (
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="xl">
+        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="xl">
           {employers.map((employer) => (
             <div
               key={employer.id}
@@ -64,34 +69,9 @@ export default function Employers({
                 onSelect?.(employer);
               }}
             >
-              {/* Delete Button */}
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setEditTarget(employer);
-                }}
-                aria-label={`Edit ${employer.clientName}`}
-                className="absolute right-24 top-3 z-10 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-orange-50 hover:text-brand"
-              >
-                <IconPencil size={15} />
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setDeleteError("");
-                  setDeleteTarget(employer);
-                }}
-                className="absolute right-3 top-3 z-10 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-red-50 hover:text-red-600"
-              >
-                <IconTrash size={15} />
-                Delete
-              </button>
-
               {/* Employer Information */}
               <div className="flex h-full flex-col items-start gap-3 p-6">
+                <div className="flex w-full min-w-0 items-center gap-3">
                 {employer.companyLogo || employer.logoUrl || employer.logo ? (
                   <img
                     src={employer.companyLogo || employer.logoUrl || employer.logo}
@@ -99,17 +79,21 @@ export default function Employers({
                     className="h-14 w-14 shrink-0 rounded-full border border-slate-200 bg-white object-contain"
                   />
                 ) : (
-                  <div
-                    aria-label="Company logo placeholder"
-                    className="h-14 w-14 shrink-0 rounded-full border border-slate-200 bg-white"
+                  <Avatar
+                    name={employer.clientName}
+                    color="initials"
+                    size={56}
+                    radius="xl"
+                    aria-hidden="true"
+                    className="shrink-0 border border-slate-200"
                   />
                 )}
-
-                <div className="w-full">
-                  <h3 className="line-clamp-2 font-display text-lg font-bold text-ink">
+                  <h3 className="line-clamp-2 min-w-0 font-display text-lg font-bold text-ink">
                     {employer.clientName}
                   </h3>
+                </div>
 
+                <div className="w-full">
                   <p className="mt-1 truncate text-sm text-slate-500">
                     {employer.contactEmail}
                   </p>
@@ -126,6 +110,33 @@ export default function Employers({
                   <p className="mt-2 truncate text-xs text-slate-400">
                     {employer.contactPerson}{employer.contactPhone ? ` · ${employer.contactPhone}` : ""}
                   </p>
+                </div>
+                <div className="mt-auto flex w-full justify-end gap-3 border-t border-slate-100 pt-3">
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setEditTarget(employer);
+                    }}
+                    aria-label={`Edit ${employer.clientName}`}
+                    className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-slate-400 transition hover:bg-orange-50 hover:text-brand"
+                  >
+                    <IconPencil size={14} />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setDeleteError("");
+                      setDeleteTarget(employer);
+                    }}
+                    aria-label={`Delete ${employer.clientName}`}
+                    className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                  >
+                    <IconTrash size={14} />
+                    Delete
+                  </button>
                 </div>
               </div>
             </div>
@@ -146,23 +157,15 @@ export default function Employers({
         onClose={() => setSelectedEmployer(null)}
         title={
           <div className="flex items-center gap-3">
-            {selectedEmployer?.companyLogo || selectedEmployer?.logoUrl || selectedEmployer?.logo ? (
-              <img
-                src={selectedEmployer.companyLogo || selectedEmployer.logoUrl || selectedEmployer.logo}
-                alt=""
-                className="h-11 w-11 shrink-0 rounded-full border border-slate-200 object-contain"
-              />
-            ) : (
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400">
-                <IconBuilding size={21} />
-              </div>
-            )}
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#fff1e3] text-brand">
+              <IconBuilding size={21} />
+            </div>
             <div>
               <p className="font-display text-xl font-extrabold text-ink">
-                Employer details
+                Employer Details
               </p>
               <p className="mt-1 text-sm font-normal text-slate-400">
-                {selectedEmployer?.clientName}
+                Client and employment information.
               </p>
             </div>
           </div>
@@ -190,11 +193,26 @@ export default function Employers({
       >
         {selectedEmployer && (
           <Stack gap="md">
-            <div>
-              <p className="text-sm font-semibold text-brand">{selectedEmployer.clientName}</p>
-              <h3 className="mt-1 font-display text-2xl font-extrabold text-ink">
-                Employer information
-              </h3>
+            <div className="flex items-center gap-3">
+              {selectedEmployer.companyLogo || selectedEmployer.logoUrl || selectedEmployer.logo ? (
+                <img
+                  src={selectedEmployer.companyLogo || selectedEmployer.logoUrl || selectedEmployer.logo}
+                  alt=""
+                  className="h-11 w-11 shrink-0 rounded-full border border-slate-200 object-contain"
+                />
+              ) : (
+                <Avatar
+                  name={selectedEmployer.clientName}
+                  color="initials"
+                  size={44}
+                  radius="xl"
+                  aria-hidden="true"
+                  className="shrink-0 border border-slate-200"
+                />
+              )}
+              <p className="font-display text-xl font-extrabold text-ink">
+                {selectedEmployer.clientName}
+              </p>
             </div>
             <div className="flex flex-wrap gap-2">
               {selectedEmployer.shift && <Badge variant="light">{selectedEmployer.shift}</Badge>}
@@ -233,7 +251,7 @@ export default function Employers({
       <Modal
         opened={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
-        title="Delete employer"
+        title="Delete Employer"
         centered
         radius="xl"
       >

@@ -16,6 +16,15 @@ createRoot(document.getElementById("root")).render(
           orange: ["#fff4e8", "#ffe5cc", "#ffd2a3", "#ffbc75", "#ffa64c", "#ff8811", "#e97600", "#c96300", "#a95000", "#873f00"],
         },
         fontFamily: "DM Sans, sans-serif",
+        components: {
+          Modal: {
+            styles: {
+              title: {
+                fontWeight: 700,
+              },
+            },
+          },
+        },
       }}
     >
       <App />

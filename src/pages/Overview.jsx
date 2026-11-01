@@ -43,7 +43,7 @@ export default function Overview({ invoices, employers, onNavigate }) {
           onClick={() => onNavigate("invoices")}
           className="bg-brand hover:bg-[#c96300]"
         >
-          View invoices
+          View Invoices
         </Button>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

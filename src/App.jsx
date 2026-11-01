@@ -12,7 +12,6 @@ import Overview from "./pages/Overview";
 import Invoices from "./pages/Invoices";
 import Employers from "./pages/Employers";
 import Jobs from "./pages/Jobs";
-import LandingPage from "./pages/LandingPage";
 import WorkspaceLandingPage from "./pages/WorkspaceLandingPage";
 
 import { useJobs } from "./hooks/useJobs";
@@ -70,7 +69,7 @@ export default function App() {
   if (path === "/app") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   if (path === "/login") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
   if (path === "/workspace") return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
-  return <LandingPage />;
+  return <WorkspaceLandingPage onLogin={login} onBack={closeLogin} />;
 }
 
 function WorkspaceApp({ onLogout }) {

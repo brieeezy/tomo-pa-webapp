@@ -3,7 +3,11 @@ import { Button, Modal, PasswordInput, TextInput } from "@mantine/core";
 import { IconArrowRight, IconLock } from "@tabler/icons-react";
 import Brand from "../components/Brand";
 
-export default function WorkspaceLandingPage({ onLogin, onBack, initialLoginOpen = false }) {
+export default function WorkspaceLandingPage({
+  onLogin,
+  onBack,
+  initialLoginOpen = false,
+}) {
   const [loginOpen, setLoginOpen] = useState(initialLoginOpen);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,9 +21,20 @@ export default function WorkspaceLandingPage({ onLogin, onBack, initialLoginOpen
     try {
       await onLogin(username, password);
     } catch (loginError) {
-      setError(loginError.response?.status === 401 || loginError.response?.status === 403
-        ? "Those details weren’t recognized. Check them and try again."
-        : loginError.message || "Could not sign in. Please try again.");
+      const status = loginError.response?.status;
+      if (status === 401 || status === 403) {
+        setError("Those details weren’t recognized. Check them and try again.");
+      } else if (status >= 500) {
+        setError(
+          "Tomo’s service returned an error. Check that the backend is running, then try again.",
+        );
+      } else if (!loginError.response) {
+        setError(
+          "Could not reach Tomo’s service. Check that the backend is running and try again.",
+        );
+      } else {
+        setError(loginError.message || "Could not sign in. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -27,20 +42,73 @@ export default function WorkspaceLandingPage({ onLogin, onBack, initialLoginOpen
 
   return (
     <main className="workspace-welcome">
-      <button className="workspace-back" onClick={onBack}>← Back to Tomo</button>
+      {/* <button className="workspace-back" onClick={onBack}>
+        ← Back to Tomo
+      </button> */}
       <section className="workspace-welcome-content">
         <Brand />
-        <p className="workspace-welcome-subtitle">Make room for the work that matters. <span aria-hidden="true">🐾</span></p>
-        <Button className="tomo-landing-button" onClick={() => setLoginOpen(true)} rightSection={<IconArrowRight size={17} />}>Sign in</Button>
+        <p className="workspace-welcome-subtitle">
+          Make room for the work that matters.{" "}
+          <span aria-hidden="true">🐾</span>
+        </p>
+        <Button
+          className="tomo-landing-button"
+          onClick={() => setLoginOpen(true)}
+          rightSection={<IconArrowRight size={17} />}
+        >
+          Sign in
+        </Button>
       </section>
-      <Modal opened={loginOpen} onClose={() => setLoginOpen(false)} title="Sign in to Tomo" centered size="md" radius="lg">
-        <div className="tomo-modal-intro"><span className="tomo-modal-lock"><IconLock size={19} /></span><div><strong>Welcome back</strong><p>Use your workspace account to continue.</p></div></div>
+      <Modal
+        opened={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        title="Sign in to Tomo"
+        centered
+        size="md"
+        radius="lg"
+      >
+        <div className="tomo-modal-intro">
+          <span className="tomo-modal-lock">
+            <IconLock size={19} />
+          </span>
+          <div>
+            <strong>Welcome back!</strong>
+          </div>
+        </div>
         <form className="tomo-modal-form" onSubmit={submit}>
-          <TextInput label="Username" placeholder="Your username" autoComplete="username" value={username} onChange={(event) => setUsername(event.currentTarget.value)} required />
-          <PasswordInput label="Password" placeholder="Your password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.currentTarget.value)} required />
-          {error && <p className="login-error" role="alert">{error}</p>}
-          <Button type="submit" className="tomo-landing-button" loading={submitting} rightSection={<IconArrowRight size={17} />}>Sign in</Button>
-          <p className="tomo-modal-secure"><IconLock size={13} /> Your sign-in details stay in this browser session.</p>
+          <TextInput
+            label="Username"
+            placeholder="Your username"
+            autoComplete="username"
+            value={username}
+            onChange={(event) => setUsername(event.currentTarget.value)}
+            required
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Your password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(event) => setPassword(event.currentTarget.value)}
+            required
+          />
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
+          <Button
+            type="submit"
+            className="tomo-landing-button"
+            loading={submitting}
+            rightSection={<IconArrowRight size={17} />}
+          >
+            Sign in
+          </Button>
+          <p className="tomo-modal-secure">
+            <IconLock size={13} /> Your sign-in details stay in this browser
+            session.
+          </p>
         </form>
       </Modal>
     </main>

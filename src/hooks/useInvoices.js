@@ -45,11 +45,21 @@ export function useInvoices() {
 
     setError("");
     try {
-      const saved = await updateInvoiceRequest(id, { ...current, ...changes });
+      const updates = { ...current, ...changes };
+      const saved = await updateInvoiceRequest(id, updates);
+      const updated = { ...updates, ...saved };
+      if (Object.hasOwn(changes, "tax")) {
+        updated.tax = Number(changes.tax);
+      }
+      if (Object.hasOwn(changes, "grossIncome")) {
+        updated.grossIncome = Number(changes.grossIncome);
+      }
       setInvoices((items) =>
-        items.map((invoice) => (String(invoice.id) === String(id) ? saved : invoice)),
+        items.map((invoice) =>
+          String(invoice.id) === String(id) ? updated : invoice,
+        ),
       );
-      return saved;
+      return updated;
     } catch (requestError) {
       setError("Could not update the invoice. Check the Tomo service and try again.");
       throw requestError;

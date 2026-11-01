@@ -5,6 +5,9 @@ export const formatMoney = (amount, currency = "PHP") =>
     maximumFractionDigits: 2,
   }).format(Number(amount || 0));
 
+export const calculateInvoiceTax = (netIncome, taxType) =>
+  taxType === "Service Contractor 8%" ? Number(netIncome || 0) * 0.08 : 0;
+
 export const formatDate = (date) => {
   if (!date) return "—";
   const value =
@@ -25,8 +28,8 @@ export const calculateInvoice = (invoice) => {
   if (invoice.grossIncome != null) return Number(invoice.grossIncome);
   if (invoice.netIncome != null) {
     return (
-      Number(invoice.netIncome || 0) +
-      Number(invoice.tax || 0) +
+      Number(invoice.netIncome || 0) -
+      Number(invoice.tax || 0) -
       Number(invoice.deductibles || 0)
     );
   }

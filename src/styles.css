@@ -683,7 +683,7 @@ body {
 .tomo-message-row { display: flex; width: 100%; align-items: flex-end; gap: 7px; }
 .tomo-message-user { justify-content: flex-end; }
 .tomo-message-assistant { justify-content: flex-start; }
-.tomo-chat-minimize { margin-left: auto; display: grid; width: 30px; height: 30px; place-items: center; border: 0; border-radius: 50%; background: #f5f2f7; color: #51476a; font-size: 17px; cursor: pointer; }
+.tomo-chat-minimize { display: grid; width: 30px; height: 30px; place-items: center; border: 0; border-radius: 50%; background: #f5f2f7; color: #51476a; font-size: 17px; cursor: pointer; }
 .tomo-chat-minimize:hover { background: #e8f7f5; }
 .tomo-chathead-launcher { position: fixed; z-index: 100; right: 24px; bottom: 24px; display: grid; width: 62px; height: 62px; place-items: center; border: 3px solid white; border-radius: 50%; background: #fff; box-shadow: 0 8px 28px #392f5a30; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
 .tomo-chathead-launcher:hover { transform: translateY(-3px); box-shadow: 0 12px 30px #392f5a3d; }
