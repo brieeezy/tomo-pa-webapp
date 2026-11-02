@@ -5,6 +5,12 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "./styles.css";
 import App from "./App";
+import { app } from "./config/firebase";
+import { getAnalytics, logEvent } from "firebase/analytics";
+
+const analytics = getAnalytics(app);
+
+logEvent(analytics, "page_view");
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
