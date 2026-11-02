@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "tomoai-2ae69": {
+      "hosting": {
+        "prod": [
+          "tomoai"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
