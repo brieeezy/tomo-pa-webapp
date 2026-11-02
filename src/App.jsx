@@ -17,6 +17,7 @@ import WorkspaceLandingPage from "./pages/WorkspaceLandingPage";
 import { useJobs } from "./hooks/useJobs";
 import { useEmployments } from "./hooks/useEmployments";
 import { useInvoices } from "./hooks/useInvoices";
+import { useNotifications } from "./hooks/useNotifications";
 import {
   clearApiCredentials,
   setApiCredentials,
@@ -98,10 +99,22 @@ function WorkspaceApp({ onLogout }) {
     update: updateEmployer,
     remove: deleteEmployer,
   } = useEmployments();
+  const {
+    notifications,
+    unreadNotifications,
+    unreadCount,
+    loading: notificationsLoading,
+    error: notificationsError,
+    markAsRead,
+    markAllAsRead,
+    reload: reloadNotifications,
+    deleteNotification,
+  } = useNotifications();
 
   const [invoiceModal, setInvoiceModal] = useState(false);
   const [employerModal, setEmployerModal] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
+  const [highlightedJobIds, setHighlightedJobIds] = useState([]);
 
   // Replace these defaults with the loading/error values from your API hooks.
   const pageLoading = loading;
@@ -121,6 +134,38 @@ function WorkspaceApp({ onLogout }) {
       return next;
     });
   };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllAsRead();
+      const ids = jobs.map((job) => String(job.id));
+      setViewedJobIds(new Set(ids));
+      window.localStorage.setItem(
+        "tomo-viewed-job-ids",
+        JSON.stringify(ids)
+      );
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+    }
+  };
+
+  const handleMarkJobAsRead = async (notificationId) => {
+    try {
+      await markAsRead(notificationId);
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
+
+    const handleDeleteNotification = async (notificationId) => {
+      try {
+        await deleteNotification(notificationId);
+      } catch (error) {
+        console.error("Failed to delete notification:", error);
+      }
+    };
+  
+  
 
   const page =
     active === "invoices" ? (
@@ -143,6 +188,7 @@ function WorkspaceApp({ onLogout }) {
     ) : active === "jobs" ? (
       <Jobs
         jobs={jobs}
+        highlightedJobIds={highlightedJobIds}
         onViewJob={markJobViewed}
         onCreateEmployment={createEmployer}
         onToggleImportant={(job) => {
@@ -177,8 +223,14 @@ function WorkspaceApp({ onLogout }) {
             title={pageTitles[active]}
             onMenu={() => setMobileNav(true)}
             onLogout={onLogout}
-            newJobs={jobs.filter((job) => !viewedJobIds.has(String(job.id)))}
-            onOpenJobs={() => navigate("jobs")}
+            notifications={unreadNotifications}
+            onMarkAsRead={handleMarkJobAsRead}
+            onMarkAllAsRead={handleMarkAllAsRead}
+            onOpenJobs={relatedJobIds => {
+              setHighlightedJobIds(relatedJobIds.map(String));
+              navigate("jobs")
+            }}
+            onDelete={handleDeleteNotification}
           />
 
           <Container size="xl" className="px-5 py-7 md:px-8 md:py-9">

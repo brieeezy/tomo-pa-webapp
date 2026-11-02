@@ -4,7 +4,7 @@ import { getApiCredentials } from "./auth";
 const api = axios.create({
   baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/rag/messages",
   headers: { "Content-Type": "application/json" },
-  timeout: 30000,
+  timeout: 10000000,
 });
 api.interceptors.request.use((config) => {
   config.auth = getApiCredentials() || undefined;
@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
 const conversationsApi = axios.create({
   baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/conversations",
   headers: { "Content-Type": "application/json" },
-  timeout: 30000,
+  timeout: 10000000,
 });
 conversationsApi.interceptors.request.use((config) => {
   config.auth = getApiCredentials() || undefined;
@@ -28,6 +28,7 @@ export async function sendChatMessage(message, conversationId = null) {
   const response = await api.post("", {
     conversationId,
     message: trimmedMessage,
+    timeout: 10000000, 
   });
   const data = response.data;
 

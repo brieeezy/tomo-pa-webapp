@@ -694,3 +694,142 @@ body {
   .tomo-chathead-launcher { right: 16px; bottom: 16px; width: 56px; height: 56px; }
   .tomo-chathead-avatar { width: 34px; height: 34px; flex-basis: 34px; }
 }
+
+.ai-message {
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.ai-message h1,
+.ai-message h2,
+.ai-message h3 {
+  margin: 20px 0 10px;
+  font-weight: 700;
+}
+
+.ai-message p {
+  margin: 10px 0;
+}
+
+.ai-message strong {
+  font-weight: 700;
+}
+
+.ai-message ul,
+.ai-message ol {
+  padding-left: 24px;
+  margin: 10px 0;
+}
+
+.ai-message li {
+  margin: 5px 0;
+}
+
+.ai-message table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.ai-message th,
+.ai-message td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.ai-message th {
+  font-weight: 700;
+  background: #f5f5f5;
+}
+
+.ai-message blockquote {
+  border-left: 3px solid #999;
+  padding-left: 12px;
+  margin: 12px 0;
+  color: #777;
+}
+
+.ai-message code {
+  background: #f1f1f1;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.ai-message pre {
+  padding: 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+  background: #1e1e1e;
+  color: white;
+}
+
+.ai-message pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* Chat sidebar resize handle */
+.tomo-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 50;
+  transition: background-color 0.2s ease;
+}
+
+.tomo-resize-handle:hover,
+.tomo-resize-handle:active {
+  background-color: #f59e0b;
+}
+
+.tomo-thinking {
+  padding: 8px 12px;
+}
+
+.tomo-thinking-dots {
+  display: inline-flex;
+  gap: 2px;
+  color: #888;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.tomo-thinking-dots span {
+  animation: tomo-dot-bounce 1.4s infinite ease-in-out;
+}
+
+.tomo-thinking-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.tomo-thinking-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.tomo-thinking-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes tomo-dot-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tomo-thinking-dots span {
+    animation: none;
+  }
+}

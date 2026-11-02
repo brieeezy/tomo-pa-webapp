@@ -91,6 +91,7 @@ function JobDescription({ description }) {
 
 export default function Jobs({
   jobs: initialJobs = [],
+  highlightedJobIds = [],
   onViewJob,
   onCreateEmployment,
   onToggleImportant,
@@ -105,9 +106,11 @@ export default function Jobs({
     setJobs(initialJobs);
   }, [initialJobs]);
 
-  const filtered = useMemo(
-    () =>
-      jobs.filter((job) => {
+  const filtered = useMemo(() => {
+    const highlightedIds = new Set(highlightedJobIds.map(String));
+
+    return jobs
+      .filter((job) => {
         const matchesSearch = [
           job.jobTitle,
           job.clientName,
@@ -117,13 +120,20 @@ export default function Jobs({
           .join(" ")
           .toLowerCase()
           .includes(search.toLowerCase());
+
         const matchesImportance =
           importance === "All jobs" ||
           (importance === "Important" ? job.isImportant : !job.isImportant);
+
         return matchesSearch && matchesImportance;
-      }),
-    [jobs, search, importance],
-  );
+      })
+      .sort((a, b) => {
+        const aHighlighted = highlightedIds.has(String(a.id));
+        const bHighlighted = highlightedIds.has(String(b.id));
+
+        return Number(bHighlighted) - Number(aHighlighted);
+      });
+  }, [jobs, search, importance, highlightedJobIds]);
 
   const toggleImportant = (event, job) => {
     event.stopPropagation();
@@ -160,6 +170,17 @@ export default function Jobs({
         </div>
       </div>
 
+      {highlightedJobIds.length > 0 && (
+        <div className="rounded-xl border border-orange-200 bg-orange-50 px-4 py-3">
+          <p className="text-sm font-semibold text-orange-800">
+            {highlightedJobIds.length} jobs from your notification
+          </p>
+          <p className="mt-1 text-xs text-orange-600">
+            Highlighted jobs are displayed first.
+          </p>
+        </div>
+      )}
+
       <section className="overflow-hidden rounded-3xl border border-white/80 bg-white/85 shadow-soft">
         <div className="flex flex-wrap gap-3 border-b border-slate-100 p-5">
           <TextInput
@@ -181,8 +202,15 @@ export default function Jobs({
             {filtered.map((job) => (
               <article
                 key={job.id}
-                onClick={() => { onViewJob?.(job); setSelectedJob(job); }}
-                className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-[#ffe5cc] hover:shadow-md sm:p-6"
+                onClick={() => {
+                  onViewJob?.(job);
+                  setSelectedJob(job);
+                }}
+                className={`group cursor-pointer rounded-2xl border p-5 shadow-sm transition sm:p-6 ${
+                  highlightedJobIds.map(String).includes(String(job.id))
+                    ? "border-brand bg-[#fff8f0] ring-2 ring-brand/30 shadow-md"
+                    : "border-slate-100 bg-white hover:border-[#ffe5cc] hover:shadow-md"
+                }`}
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex min-w-0 items-start gap-4">
@@ -191,6 +219,11 @@ export default function Jobs({
                     </div>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
+                        {highlightedJobIds.map(String).includes(String(job.id)) && (
+                          <Badge color="orange" variant="light" radius="xl">
+                            From notification
+                          </Badge>
+                        )}
                         <h3 className="font-display text-lg font-bold text-ink">
                           {job.jobTitle}
                         </h3>

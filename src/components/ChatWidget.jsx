@@ -20,6 +20,8 @@ import {
 } from "../services/chatApi";
 import { getApiCredentials } from "../services/auth";
 import tomoLogo from "../assets/tomo-logo.svg";
+import AIMessage from "../components/AIMessage";
+import ThinkingIndicator from "../components/ThinkingIndicator";
 
 const welcomeMessage = {
   role: "assistant",
@@ -108,6 +110,42 @@ export default function ChatWidget() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [retryMessage, setRetryMessage] = useState(null);
+  const [sidebarWidth, setSidebarWidth] = useState(380);
+  const isResizing = useRef(false);
+
+  const MIN_WIDTH = 300;
+  const MAX_WIDTH = 650;
+
+  function startResizing(event) {
+    event.preventDefault();
+    isResizing.current = true;
+  }
+
+  useEffect(() => {
+    function handleMouseMove(event) {
+      if (!isResizing.current) return;
+
+      const newWidth = window.innerWidth - event.clientX;
+
+      setSidebarWidth(
+        Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, newWidth)),
+      );
+    }
+
+    function handleMouseUp() {
+      isResizing.current = false;
+    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
+
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -307,13 +345,24 @@ export default function ChatWidget() {
       )}
       {open && (
         <aside
-          className="sticky top-0 flex h-screen w-[clamp(300px,29vw,390px)] shrink-0 border-l border-[#eee5da] bg-white max-[480px]:w-[280px]"
-          aria-label="Tomo assistant sidebar"
+          className="sticky top-0 flex h-screen shrink-0 border-l border-[#eee5da] bg-white"
+          aria-label="Tomo.AI assistant sidebar"
+          style={{
+            width: `${sidebarWidth}px`,
+            minWidth: `${MIN_WIDTH}px`,
+            maxWidth: `${MAX_WIDTH}px`,
+            flex: `0 0 ${sidebarWidth}px`,
+          }}
         >
+          <div
+            className="tomo-resize-handle"
+            onMouseDown={startResizing}
+            title="Drag to resize sidebar"
+          />
           <Paper
             className="flex h-full min-h-0 w-full flex-1 flex-col rounded-none border-0"
             component="section"
-            aria-label="Chat with Tomo assistant"
+            aria-label="Chat with Tomo.AI assistant"
           >
             <Group
               className="shrink-0 border-b border-[#eee5da]"
@@ -324,7 +373,7 @@ export default function ChatWidget() {
               <img src={tomoLogo} alt="Tomo" className="tomo-chathead-avatar" />
               <Stack gap={2} className="min-w-0 flex-1">
                 <Text fw={700} size="sm">
-                  Tomo assistant
+                  Tomo.AI assistant
                 </Text>
                 <Text size="xs" c="dimmed">
                   Ask about your workspace
@@ -444,26 +493,40 @@ export default function ChatWidget() {
                             : "white"
                       }
                     >
-                      <Text
-                        size="sm"
-                        c={
-                          message.role === "user"
-                            ? "white"
-                            : message.role === "error"
-                              ? "red.8"
-                              : undefined
-                        }
-                        className="whitespace-pre-wrap break-words"
-                      >
-                        {message.content}
-                      </Text>
+                      {message.role === "assistant" ? (
+                        <AIMessage content={message.content} />
+                      ) : (
+                        <Text
+                          size="sm"
+                          c={message.role === "user" ? "white" : "red.8"}
+                          className="whitespace-pre-wrap break-words"
+                        >
+                          {message.content}
+                        </Text>
+                      )}
                     </Paper>
                   </div>
                 ))}
                 {sending && (
-                  <Text size="sm" c="dimmed" role="status">
-                    Thinking…
-                  </Text>
+                  <div className="tomo-message-row tomo-message-assistant">
+                    <img
+                      src={tomoLogo}
+                      alt="Tomo"
+                      className="tomo-chathead-message"
+                    />
+
+                    <Paper
+                      className="max-w-[86%] self-start"
+                      p="sm"
+                      radius="md"
+                      withBorder
+                      bg="white"
+                    >
+                      <div role="status" aria-label="Tomo is thinking">
+                        <ThinkingIndicator />
+                      </div>
+                    </Paper>
+                  </div>
                 )}
                 {historyError && (
                   <Text size="xs" c="red" role="status">
