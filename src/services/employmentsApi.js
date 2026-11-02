@@ -2,7 +2,7 @@ import axios from "axios";
 import { getApiCredentials } from "./auth";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_EMPLOYMENTS_API_URL || "/api/employments",
+  baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/employments",
 });
 api.interceptors.request.use((config) => {
   config.auth = getApiCredentials() || undefined;

@@ -2,7 +2,7 @@ import axios from "axios";
 import { getApiCredentials } from "./auth";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_INVOICES_API_URL || "/api/invoices",
+  baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/invoices",
 });
 api.interceptors.request.use((config) => {
   config.auth = getApiCredentials() || undefined;

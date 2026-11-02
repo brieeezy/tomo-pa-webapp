@@ -3,7 +3,7 @@ import { getApiCredentials } from "./auth";
 
 export async function getJobs() {
   const api = axios.create({
-    baseURL: import.meta.env.VITE_JOBS_API_URL || "/api/jobs",
+    baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/jobs",
     auth: getApiCredentials() || undefined,
   });
   const response = await api.get("");

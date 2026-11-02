@@ -2,7 +2,7 @@ import axios from "axios";
 import { getApiCredentials } from "./auth";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_RAG_CHAT_API_URL || "/api/rag/messages",
+  baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/rag/messages",
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 });
@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
 });
 
 const conversationsApi = axios.create({
-  baseURL: import.meta.env.VITE_CONVERSATIONS_API_URL || "/api/conversations",
+  baseURL: import.meta.env.VITE_TOMO_API_ORIGIN + "/conversations",
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 });

@@ -19,7 +19,7 @@ export async function verifyCredentials(username, password) {
     throw new Error("Enter your username and password.");
   }
 
-  await axios.get(import.meta.env.VITE_JOBS_API_URL || "/api/jobs", {
+  await axios.get(import.meta.env.VITE_TOMO_API_ORIGIN + "/jobs", {
     auth: { username: username.trim(), password },
   });
   return { username: username.trim(), password };
