@@ -28,7 +28,12 @@ export default function Overview({ invoices, employers, onNavigate }) {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-slate-500">
-            Tuesday, October 27, 2026
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
           </p>
           <h2 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-ink">
             Meow, JM <span aria-hidden="true">🐾</span>
